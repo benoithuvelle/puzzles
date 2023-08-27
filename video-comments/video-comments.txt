@@ -1,0 +1,57 @@
+**********************
+* Cahier des charges *
+**********************
+
+Il faut différencier les commentaires des réponses.
+Il y a 3 catégories de commentaires, listés ci-après dans l'ordre de priorité: 
+	
+	'Pinned' (max 1, 0 dans les réponses) 
+	'Followed'
+	'none'
+
+Pour chaque catégorie de commentaire, il faut les ordonner en priorité:
+	- par nombre de 'like'
+	- du plus récent au plus ancien
+	- par ordre de recensement
+
+Une fois l'ordre établi, il faut réitérer le processus avec les réponses chaque commentaire (pas de 'Pinned')
+
+
+******************
+* Spécifications * 
+******************
+function getTimestamp( time ) { return timestamp }
+
+IMPLEMENTER CETTE STRUCTURE ==> demander au boss
+	comments = [priority][likes][timestamp][index] = comment
+	problème: des trous dans les index ==> 42 likes, 11 likes, ... quid des 0, 1, 2, 3, 4, ... autres index ?
+		==> fonctionner avec des maps plutôt que des objects pour pouvoir itérer. ATTENTION: besoin d'itérer dans l'ordre croissant.
+		ou bien:
+			accepter des tableaux avec pleins de trous et ne rien faire si pas de valeur à 'index'
+
+
+
+class Comment = {
+	content,
+	parent,
+	index,
+}
+
+priorityMap = { index: priority }
+comment = { content, replies : Comments }
+comments = 
+	[
+		priority: Likes{ likes : Timestamp{ timestamp : {index : comment } } }
+	]
+[likes][timestamp][index]
+	
+
+
+***********
+* Roadmap *
+***********
+
+for (const priority of comments) {
+	for (const like of likes)
+}
+

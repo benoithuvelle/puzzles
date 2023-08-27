@@ -1,0 +1,65 @@
+**********************
+* Cahier des charges *
+**********************
+Pour chaque case reçue en lecture, il faut déterminer la surface du lac qu'elle forme avec toutes ses cases voisines.
+--- case voisine: uniquement dans les 4 directions
+2 cas:
+	- la case ne contient pas d'eau, alors on retourne 0
+	- la case contient de l'eau, alors il faut parcourir tous ces voisins, comptabiliser le nombre de cases et ensuite retourner ce nombre.
+
+******************
+* Spécifications * 
+******************
+initialisation:
+	grid: new Map(hash, value) // enregistrement de la grille
+	const lakes: [] // enregistrera les lacs pour une mémoïzation
+	const hash = [x,y] => hash // une fonction qui prends une tableau 'coordonnée' [x,y] en entrée et retourne un hash
+	const DIR[[x,y]] = [[0, -1],[+1, 0],[0, +1],[-1, 0]]
+	
+	// renvoie les voisins de la case seulement si case == eau 
+	function generateChildren(hash)
+		const [x, y] = unhash(hash)
+		const children = []
+		for [X,Y] of DIR
+			newX
+			newY
+			const hash = hash([newX, newY])
+			const nextNode = grid.get(hash)
+			if nextNode === 'O'
+				children.push(hash([x+X, y+Y].join())
+		return children
+
+pour chaque case:
+	const lake = new Set() //  
+	const case = hash(input.split(' '))
+	const stack = [case]
+	for (const lake of lakes)
+		if (lake.has(case))
+			return lake.size
+	
+	BFS ==>
+	lake.add(case)
+
+	while(stack.length) 
+		let case = stack.pop()
+		const children = generateChildren(case)
+		for (const child of children)
+			lake.set(child)
+		stack.push(...children)
+
+	lakes.push(lake)
+	console.log(lake.size)
+
+
+*********************
+* Structure de code *
+*********************
+1. split les string coordonnées en tableau [x,y]
+2.
+
+***********
+* Roadmap *
+***********
+
+
+

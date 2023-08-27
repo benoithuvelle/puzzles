@@ -1,0 +1,30 @@
+Parmis les 4 alphabets, 1 seul répond au critère suivant: il doit contenir tous les mots listés.
+On commence par supposer que les 4 alphabets sont bons. 
+Pour chaque mot de la liste, on teste les alphabets les uns après les autres. 
+Si l'alphabet ne contient pas le mot, alors il sort des alphabets potentiels. 
+On trouve l'alphabet duquel sont issus les mots dès qu'il ne reste qu'un alphabet répondant au critère. 
+Une fois l'alphabet trouvé, il faut déterminer vers quel alphabet le mot doit être traduit. 
+
+
+SPEC.
+	* words[] : tableau des mots à tester crée depuis l'entrée split(' ')
+	* str[4][26] alphabets : tableau à 2 dimensions, contenant les 4 alphabets dans l'ordre chronologique.
+		===> alphabets[0] sera le contenu de l'alphabet '1908', ...
+	valids[] : [0,1,2,3]
+	let origin : variable qui sera assignée à l'index de l'alphabet déterminé   
+	const target : (origin) => (origin + 1) % 4
+	let newWords[] : array vide 
+
+init.
+	1. créer words [] en splitant la string d'entrée
+	2. créer 'alphabets'
+	3. créer valids
+body.
+	1. déclarer 'origin'
+	2. Tester 'words' un par un contre chacun des alphabets dont les id sont dans 'valids'. Si un alphabet ne rempli par la condition, il est supprimé de 'valids'. If valids.length = 1, assign origin + break
+	3. remplir le tableau de traduction 
+		=>  for word of words 
+			=> findIndex in alphabets[origin]
+			=> newWords push alphabets[target][index]
+	4. créer la string et la printer ==> newWords.join(' ') 
+

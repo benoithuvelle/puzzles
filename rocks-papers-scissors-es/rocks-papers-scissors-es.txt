@@ -1,0 +1,73 @@
+**********************
+* Cahier des charges *
+**********************
+	Trouver l'index dans une collection de bataille qui nous permet de gagner le plus de bataille.
+
+	Rock : 0
+	Paper : 1
+	Scissor : 2
+
+	==> types
+		2 win 1
+		1 win 0
+		0 win 2
+
+			==> Type N gagne sur type N-1
+				==> N wins on (3 + N-1) % 3  
+					==> 2 wins on 4%3 (1)
+						1 wins on 3%3 (0)
+						0 wins on 2%3 (2)
+			==> Type N perd sur type (3 + N +1) %3
+					==> 2 loses on 6%3 (0)
+						1 loses on 5%3 (2)
+						0 loses on 4%3 (1)
+
+	Pour chaque index, simuler toutes les parties 
+		=> Le premier match détermine notre type
+			=> Si type à index est 0, alors me = 1 => type = (valeur à index) + 1
+		=> Tester ensuite tous les autres opposants, le test s'arrête des qu'on enregistre une défaite
+		=> Enregistrer le score de l'index   
+
+******************
+* Spécifications *
+******************
+	typeToInt : Map(type, integer)
+	intToType : Map(integer, type)
+	opponents : [type]
+	scoreToIndex : Array(score, index) // enregistre chaque resultat !!! Ne pas réenregistrer un résultat déjà obtenu pour conserver le plus petit index !!!
+	function getScore(me, opponent) {
+		const result = (3+me-opponent)%3
+		return result == 2 ? undefined : result
+	}
+
+********
+* Code * 
+********
+	const len = opponents.length
+	for i 0 to len -1
+		const root = i
+		let total = 0
+		const me = (3 + opponents[root]-1) % 3
+		for j 0 to len -1
+			opponent = opponents[(root + j) % len] 
+			score = getScore(me, opponent)
+			if (score)
+				total += score
+			else
+				break
+		if (!scoreToIndex[total])			
+			scoreToIndex[total] = {root, me}
+
+	scoreToIndex.flat()
+
+	const {root, me} = scoreToIndex[0]
+	console.log(intToType(me))
+	console.log(root)
+
+***************
+* Erreurs *
+***************
+1.	const opponents = new Array(n).fill(0).map(() => typeToInt.get(readline())); WTF???
+2.  typeToInt et intToType sont des Map(). ==> Ne pas oublier d'acceder aux objects via la méthode get !!!!!!
+3.	if (!score) avec score attendu de 0 !!! Of course !!!!
+

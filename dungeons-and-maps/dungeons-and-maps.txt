@@ -1,0 +1,51 @@
+**********************
+* Cahier des charges *
+**********************
+
+Pour chaque carte reçue, il faut déterminer si un chemin valide existe entre 'start' et T.
+Hors de ces chemins valides, il faut sélectionner le plus court et printer son index.
+Si aucune carte ne propose de chemin valide, print 'TRAP'
+
+==> pour chaque case, il faut trouver la case suivante en fonction de la direction affichée par la case courante.
+	- si aucune autre case 'chemin', alors c'est un piège
+	- si la case suivante me renvoie sur une case déjà explorée, alors c'est un piège
+	- si la case suivante est T, alors on a trouvé
+
+	==>
+	- lire la case 
+	- en fonction de la direction, choisir la prochaine case 
+
+******************
+* Spécifications *
+******************
+initialisation 
+	const hash = [coord] => hash
+	map[][] : un tableau à 2 dimensions représentant une carte
+	maps[map] : un tableau de map
+	paths : Map(len, index) une map entre les longueurs des chemins en clé et l'indice du chemin en valeur 
+forEach map
+	len = 0
+	visited = new Set()
+	function getNextCell([coord])
+		dirMap //
+		nextCell[coord]
+		if nextCell && !visited.has(hash(nextCell))
+			return nextCell
+
+	let cell = input
+	let found = false
+	while(cell)
+		visited.add(hash(cell))
+		len++
+		if (grid[cellY][cellX] === 'T') {
+			found = true
+			break
+		}
+		cell = getNextCell(cell)
+	if (found)
+		paths.set(len, index)
+
+if (!paths.size)
+	console.log('TRAP')
+else
+	console.log(Array.from(paths.keys()).sort((a,b) => a - b))
