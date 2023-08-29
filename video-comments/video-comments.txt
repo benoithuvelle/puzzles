@@ -35,18 +35,6 @@ Une fois l'ordre établi, il faut réitérer le processus avec les réponses de 
 ******************
 * Spécifications * 
 ******************
-function getTimestamp( time ) { return timestamp }
-
-IMPLEMENTER CETTE STRUCTURE ==> demander au boss
-	comments = [priority][likes][timestamp][index] = comment
-	problème: des trous dans les index ==> 42 likes, 11 likes, ... quid des 0, 1, 2, 3, 4, ... autres index ?
-		==> fonctionner avec des maps plutôt que des objects pour pouvoir itérer. ATTENTION: besoin d'itérer dans l'ordre croissant.
-		ou bien:
-			accepter des tableaux avec pleins de trous et ne rien faire si pas de valeur à 'index'
-
-const comments: [priority]
-const priority: [{ likes: integer, comments: [id] }]	
-
 
 ***********
 * Roadmap *
@@ -97,7 +85,5 @@ function sortGroup(group) {   // group: [[c, c, c]]
 					sortGroup(comment.children)
 				}
 		}
-
-
 	}
 }
