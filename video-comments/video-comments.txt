@@ -1,20 +1,35 @@
+INPUTS
+
+Entrée
+3
+user1|05:34|0|none
+user2|05:36|0|none
+user3|05:35|0|none
+
+Sortie
+user2|05:36|0|none
+user3|05:35|0|none
+user1|05:34|0|none
+
+
+
 **********************
 * Cahier des charges *
 **********************
 
 Il faut différencier les commentaires des réponses.
-Il y a 3 catégories de commentaires, listés ci-après dans l'ordre de priorité: 
+Il y a 3 catégories de commentaires, listés ci-dessous dans l'ordre de priorité: 
 	
 	'Pinned' (max 1, 0 dans les réponses) 
 	'Followed'
 	'none'
 
 Pour chaque catégorie de commentaire, il faut les ordonner en priorité:
-	- par nombre de 'like'
-	- du plus récent au plus ancien
-	- par ordre de recensement
+	- par nombre de 'like'   (plus grand d'abord)
+	- du plus récent au plus ancien   (plus grand d'abord)
+	- par ordre de recensement    < (plus petit d'abord)
 
-Une fois l'ordre établi, il faut réitérer le processus avec les réponses chaque commentaire (pas de 'Pinned')
+Une fois l'ordre établi, il faut réitérer le processus avec les réponses de chaque commentaire (pas de 'Pinned')
 
 
 ******************
@@ -29,29 +44,60 @@ IMPLEMENTER CETTE STRUCTURE ==> demander au boss
 		ou bien:
 			accepter des tableaux avec pleins de trous et ne rien faire si pas de valeur à 'index'
 
-
-
-class Comment = {
-	content,
-	parent,
-	index,
-}
-
-priorityMap = { index: priority }
-comment = { content, replies : Comments }
-comments = 
-	[
-		priority: Likes{ likes : Timestamp{ timestamp : {index : comment } } }
-	]
-[likes][timestamp][index]
-	
+const comments: [priority]
+const priority: [{ likes: integer, comments: [id] }]	
 
 
 ***********
 * Roadmap *
 ***********
 
-for (const priority of comments) {
-	for (const like of likes)
-}
+1. Pour tous les commentairs
+	classer les comments selon leur priorité
+2. Pour chaque priorité
+	classer les comments selon leur like
+3. pour chaque like
+	classer les comments selon leur timestamp
+4. pour chaque timestamp
+	classer les commentaires selon leur index
+	logger les comments 1 par 1 et repartir à l'étape 1 avec leurs enfants
 
+
+comment : { content[str], user[int], timestamp[int], like[int], priority[str], children[arr] }
+
+
+function sortGroup(group) {   // group: [[c, c, c]]
+	if (!group)
+		return
+	const likeMap = group.reduce((map, c) => {
+		const like = map.get(c.like)
+		if (!like)
+			map.set(like, [c])
+		else
+			like.push(c)
+	}, new Map())
+
+	const sortedByLike = Array.from(likeMap).sort((a, b) => a[0] - b[0])
+	
+	for (const [likeValue, comments] of sortedByLike) {
+		const timestampMap = comments.reduce((map, c) => {
+			const time = map.get(c.timestamp)
+			if (!time)
+				map.set(time, [c])
+			else
+				time.push(c)
+		}, new Map())
+
+		const sortedByTime = Array.from(timestampMap).sort((a,b) => a[0] - b[0])
+		
+		for (const [t, comments] of sortedByTime) {
+			const byIndex = comments.sort((a,b) => b.index - a.index)
+				for (const comment of byIndex) {
+					console.log(comment.content)
+					sortGroup(comment.children)
+				}
+		}
+
+
+	}
+}
