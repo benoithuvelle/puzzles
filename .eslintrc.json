@@ -1,0 +1,53 @@
+{
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+
+  "globals": {
+    "readline": "readonly",
+    "printErr": "readonly"
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "extends": ["eslint:recommended"],
+  "rules": {
+    "no-eval": "error",
+    "no-var": "error",
+    "eqeqeq": "error",
+    "prefer-const": "error",
+    "quotes": [
+      "error",
+      "single",
+      { "avoidEscape": true, "allowTemplateLiterals": false }
+    ],
+    "curly": ["error", "multi-or-nest"],
+    "padded-blocks": ["error", "never"],
+    "dot-notation": "error",
+    "no-undef-init": "error",
+    "prefer-arrow-callback": "error",
+    "require-atomic-updates": "error",
+    "no-duplicate-imports": "warn",
+    "no-tabs": "error",
+    "no-trailing-spaces": "error",
+    "no-multiple-empty-lines": "error",
+    "spaced-comment": [
+      "error",
+      "always",
+      { "markers": ["/"], "exceptions": ["*"] }
+    ]
+  },
+  "ignorePatterns": ["**/node_modules/**", "**/obfuscated/**", "**/dist/**"],
+  "overrides": [
+    {
+      "files": ["*.jsx", "*.js"]
+    }
+  ]
+}

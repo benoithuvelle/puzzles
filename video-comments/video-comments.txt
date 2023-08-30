@@ -50,6 +50,12 @@ Une fois l'ordre établi, il faut réitérer le processus avec les réponses de 
 	classer les commentaires selon leur index
 	logger les comments 1 par 1 et repartir à l'étape 1 avec leurs enfants
 
+Pour tous les commentaires, les classer en fonctino
+	si 
+	si
+	si
+	dans une seule fonction
+
 
 comment : { content[str], user[int], timestamp[int], like[int], priority[str], children[arr] }
 
@@ -87,3 +93,12 @@ function sortGroup(group) {   // group: [[c, c, c]]
 		}
 	}
 }
+
+**************
+* CONCLUSION *
+**************
+
+-	Ne pas oublier le return dans un reduce
+-	.sort() est bcp plus capable que 'prévu' 
+		=> Selon des critères que l'on lui donne en paramêtre, il va placer a ou b devant l'autre et bouclera tant qu'il faudra. 
+			==> il est possible de trier sur l'ensemble des critères en 1 seule fois
