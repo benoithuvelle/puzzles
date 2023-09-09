@@ -15,15 +15,14 @@ let maxDepth = 1;
 for (const p of Object.values(people))
 {
     let node;
-    const stack = [{ ...p, depth: 1 }];
+    const stack = [{ ...p, depth: 0 }];
     while (stack.length)
     {
         node = stack.pop();
         if (node.depth > maxDepth)
             maxDepth = node.depth;
-        const depth = ++node.depth;
         for (const child of node.children)
-            stack.push({ ...child, depth });
+            stack.push({ ...child, depth: node.depth + 1 });
     }
 }
 console.log(maxDepth);
