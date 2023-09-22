@@ -1,12 +1,8 @@
-function hash(parent, child)
-{
-    return parent + '|' + child;
-}
 const building = new Array(+readline())
     .fill(0)
     .map(readline)
     .reduce((obj, c) => {
-        const [room, value, n1, n2] = c.split(' ').map((x) => +x);
+        const [room, money, n1, n2] = c.split(' ').map((x) => +x);
         let neighbours;
         if (!Number.isNaN(n1) || !Number.isNaN(n2))
         {
@@ -17,65 +13,27 @@ const building = new Array(+readline())
                 neighbours.push(n2);
         }
 
-        obj[room] = { id: room, value, neighbours };
+        obj[room] = { id: room, money, neighbours };
         return obj;
     }, {});
 
-let node = building[0];
-let bestValue = 0;
-const magicStack = [{ ...node, parent: undefined, weight: node.parent?.weight ?? 0 + node.value }];
-const roomValues = {};
+const moneyInRoom = new Map();
 
-while (magicStack.length)
+function getMoney(roomId)
 {
-    node = magicStack.pop();
-    if (node.neighbours)
-    {
-        for (const n of node.neighbours)
-        {
-            const roomValue = roomValues[hash(node.id, n)];
-            if (roomValue !== undefined)
-            {
-                const weight = node.weight + roomValue;
-                if (weight > bestValue)
-                    bestValue = weight;
-            }
-            else
-            {
-                const neighbour = {
-                    ...building[n],
-                    parent: node,
-                    weight: node.weight + building[n].value,
-                };
-                let index;
+    const room = building[roomId];
+    const roomValue = moneyInRoom.get(roomId);
+    if (roomValue)
+        return roomValue;
 
-                for (let i = 0; i < magicStack; i++)
-                {
-                    if (magicStack[i].weight > neighbour.weight)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-                magicStack.splice(index, 0, neighbour);
-                // magicStack.push(neighbour);
-            }
-        }
-    }
+    if (!room.neighbours)
+        return room.money;
     else
     {
-        // printErr('this node has no neighbours', node.id);
-        if (node.weight > bestValue)
-            bestValue = node.weight;
-        node.magicValue = node.value;
-        while (node.parent)
-        {
-            node.parent.magicValue = node.magicValue + node.parent.value;
-            const h = hash(node.parent.id, node.id);
-            roomValues[h] = node.magicValue;
-            node = node.parent;
-        }
+        const maxMoney = room.money + Math.max(...room.neighbours.map((n) => getMoney(n)));
+        moneyInRoom.set(roomId, maxMoney);
+        return maxMoney;
     }
 }
 
-print(bestValue);
+print(getMoney(0));
