@@ -49,3 +49,6 @@ O(N\*deck.length)
 ### Complexity
 
 O(N\*deck.length)
+
+## Conclusion
+error: write good pseudo code so I do not mess up i with j
