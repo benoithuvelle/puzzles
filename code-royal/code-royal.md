@@ -12,8 +12,8 @@ les KNIGHTS avancent plus vite que la reine
 
 ## Stratégie
 
-    Prendre comme cap un site de construction libre.
-    Si une unité ennemie est trop proche (les cavaliers me prennent 30pas par tour et on 25 tours de vie), alors, momentanément, je m'écarte de mon cap (je me tiens à distance) et ce, tant que l'ennemi est présent.
+Prendre comme cap un site de construction libre.
+Si une unité ennemie est trop proche (les cavaliers me prennent 30pas par tour et on 25 tours de vie), alors, momentanément, je m'écarte de mon cap (je me tiens à distance) et ce, tant que l'ennemi est présent.
 
 ## Code Structure
 
