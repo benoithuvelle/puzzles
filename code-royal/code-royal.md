@@ -37,6 +37,8 @@ Si une unité ennemie est trop proche (les cavaliers me prennent 30pas par tour 
 ### 1. Lire les inputs et créer les { Site }
 
 Pour chaque site, créer un object {Site} et l'inclure dans l'object sites { siteId: { Site } }
+Créer la reine dans le scope global.
+const queen = new Queen()
 
 ### 2. Pour chaque tour, actualiser les sites
 
@@ -52,6 +54,41 @@ Récuperer le `{ Site }` dans `sites` et créer un object de type `structureType
     sites[siteId] // set new Site to {sites}
 
 A ce stade, nous avons dans le scope globale tous les sites
+
+### 3. Pour chaque tour, créer les Units
+
+Par facilité, les recréer dans la boucle while à chaque tour. ==> Pas d'historique possible, ...
+Collecter mon armée
+Collecter l'armée ennemie
+Créer un nouvel object de type unitType
+
+    const allies = {}
+    const enemies = {}
+
+    let unit
+    if (UNIT_TYPE < 0)
+        new Queen(x,y, owner, health)
+    else
+        new UNIT_TYPE[unitType](x,y, unitType, owner, health)
+
+    [OWNER_TYPES[ownerType] === OWNER_TYPES.ALLY ? allies : enemies].push(unit)
+
+A ce stade, nous avons les deux armées
+
+### 4. Analyser la situation et choisir la meilleure action pour la reine
+
+Si l'ennemie n'existe pas:
+
+-   trouver un site lointain de ma base et la prendre en target
+
+Sinon
+
+### 5. Print les actions
+
+-   move to target
+-   train
+
+-   trouver le site libre le plus proche de ma base et la prendre en target
 
 ## Spécifications
 
@@ -82,6 +119,7 @@ A ce stade, nous avons dans le scope globale tous les sites
 
     class Queen extends Unit
     {
+        base // x, y starting point of the queen
         money
         site () {return touchedSite or undefined}
         wait()
@@ -91,6 +129,8 @@ A ce stade, nous avons dans le scope globale tous les sites
         get nearestSite()
         build(siteId, type)
         train(siteId)
+        getDistancesToSites() // Return the manhattan distance from this to every sites
+        getClosestFreeSiteFromBase()
     }
 
     class Knight extends Unit
