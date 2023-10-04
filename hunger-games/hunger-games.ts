@@ -1,26 +1,48 @@
-const players = Object.fromEntries(new Array(+readline()).fill(0).map((name) => [readline(), { victims: [] }]));
-const turns = +readline();
-for (let i = 0; i < turns; i++)
-{
-    const info = readline();
-    const regEx: RegExp = /(\w+)/g;
-    const test = info.match(regEx);
-    const killer = test.shift();
-    test.shift();
-    const victims = test;
-    for (const victim of victims)
-        players[victim].killer = killer;
-    players[killer].victims = [...players[killer].victims, ...victims];
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+
+const numSites = parseInt(readline());
+for (let i = 0; i < numSites; i++) {
+    var inputs = readline().split(' ');
+    const siteId = parseInt(inputs[0]);
+    const x = parseInt(inputs[1]);
+    const y = parseInt(inputs[2]);
+    const radius = parseInt(inputs[3]);
 }
 
-printErr(players);
-for (const [name, player, i] of Object.keys(players)
-    .sort()
-    .map((name, i) => [name, players[name], i]))
-    {
-    console.log('Name:', name);
-    console.log('Killed:', player.victims && player.victims.length !== 0 ? player.victims.sort().join(', ') : 'None');
-    console.log('Killer:', player.killer ?? 'Winner');
-    if (i !== Object.keys(players).length - 1)
-        console.log('');
+// game loop
+while (true) {
+    var inputs = readline().split(' ');
+    const gold = parseInt(inputs[0]);
+    const touchedSite = parseInt(inputs[1]); // -1 if none
+    for (let i = 0; i < numSites; i++) {
+        var inputs = readline().split(' ');
+        const siteId = parseInt(inputs[0]);
+        const ignore1 = parseInt(inputs[1]); // used in future leagues
+        const ignore2 = parseInt(inputs[2]); // used in future leagues
+        const structureType = parseInt(inputs[3]); // -1 = No structure, 2 = Barracks
+        const owner = parseInt(inputs[4]); // -1 = No structure, 0 = Friendly, 1 = Enemy
+        const param1 = parseInt(inputs[5]);
+        const param2 = parseInt(inputs[6]);
+    }
+    const numUnits = parseInt(readline());
+    for (let i = 0; i < numUnits; i++) {
+        var inputs = readline().split(' ');
+        const x = parseInt(inputs[0]);
+        const y = parseInt(inputs[1]);
+        const owner = parseInt(inputs[2]);
+        const unitType = parseInt(inputs[3]); // -1 = QUEEN, 0 = KNIGHT, 1 = ARCHER
+        const health = parseInt(inputs[4]);
+    }
+
+    // Write an action using console.log()
+    // To debug: console.error('Debug messages...');
+
+
+    // First line: A valid queen action
+    // Second line: A set of training instructions
+    console.log('WAIT');
+    console.log('TRAIN');
 }
