@@ -1,20 +1,44 @@
 {
-    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": { "project": ["./tsconfig.json"] },
-    "plugins": ["@typescript-eslint"],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+    },
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": ["eslint:recommended"],
     "globals": {
         "readline": "readonly",
         "printErr": "readonly"
     },
-    "rules": {
-        "@typescript-eslint/strict-boolean-expressions": [
-            2,
-            {
-                "allowString": false,
-                "allowNumber": false
-            }
-        ]
-    },
-    "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
+    "ignorePatterns": ["**/node_modules/**", "**/obfuscated/**", "**/dist/**"],
+    "overrides": [
+        {
+            "files": ["*.jsx", "*.js"]
+        }
+    ]
 }
+
+// {
+//     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+//     "parser": "@typescript-eslint/parser",
+//     "parserOptions": { "project": ["./tsconfig.json"] },
+//     "plugins": ["@typescript-eslint"],
+//     "globals": {
+//         "readline": "readonly",
+//         "printErr": "readonly"
+//     },
+//     "rules": {
+//         "@typescript-eslint/strict-boolean-expressions": [
+//             2,
+//             {
+//                 "allowString": false,
+//                 "allowNumber": false
+//             }
+//         ]
+//     },
+//     "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
+// }

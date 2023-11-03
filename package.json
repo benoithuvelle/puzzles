@@ -14,6 +14,7 @@
     "author": "Benibee",
     "license": "ISC",
     "dependencies": {
+        "@babel/core": "^7.23.2",
         "@babel/eslint-parser": "^7.22.11"
     },
     "devDependencies": {
