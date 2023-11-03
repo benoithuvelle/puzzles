@@ -1,36 +1,105 @@
-/**
- * Survive the wrath of Kutulu
- * Coded fearlessly by JohnnyYuge & nmahoude (ok we might have been a bit scared by the old god...but don't say anything)
- **/
+const DIR = [
+    [0, -1],
+    [+1, 0],
+    [0, +1],
+    [-1, 0],
+];
+const w = +readline();
+const h = +readline();
+const grid = new Array(h).fill(0).map(() => readline().split(''));
 
-const width = parseInt(readline());
-const height = parseInt(readline());
-for (let i = 0; i < height; i++) {
-    const line = readline();
-}
-var inputs = readline().split(' ');
-const sanityLossLonely = parseInt(inputs[0]); // how much sanity you lose every turn when alone, always 3 until wood 1
-const sanityLossGroup = parseInt(inputs[1]); // how much sanity you lose every turn when near another player, always 1 until wood 1
-const wandererSpawnTime = parseInt(inputs[2]); // how many turns the wanderer take to spawn, always 3 until wood 1
-const wandererLifeTime = parseInt(inputs[3]); // how many turns the wanderer is on map after spawning, always 40 until wood 1
+// Useless informations
+readline().split(' ').map(Number);
 
 // game loop
-while (true) {
-    const entityCount = parseInt(readline()); // the first given entity corresponds to your explorer
-    for (let i = 0; i < entityCount; i++) {
+while (true)
+{
+    const map = [...grid].map((row) => [...row]);
+    let me;
+    const friends = [];
+    const ghosts = [];
+    const entityCount = +readline(); // the first given entity corresponds to your explorer
+    for (let i = 0; i < entityCount; i++)
+    {
         var inputs = readline().split(' ');
-        const entityType = inputs[0];
+        const type = inputs[0];
         const id = parseInt(inputs[1]);
         const x = parseInt(inputs[2]);
         const y = parseInt(inputs[3]);
-        const param0 = parseInt(inputs[4]);
-        const param1 = parseInt(inputs[5]);
-        const param2 = parseInt(inputs[6]);
+        parseInt(inputs[4]);
+        parseInt(inputs[5]);
+        parseInt(inputs[6]);
+
+        //Add entity to the map
+        if (me || type !== 'EXPLORER')
+            map[y][x] = type === 'EXPLORER' ? 'E' : 'G';
+
+        if (type === 'EXPLORER')
+        {
+            if (!me)
+                me = { id, x, y };
+            else
+                friends.push({ id, x, y });
+        }
+        else
+            ghosts.push({ id, x, y });
     }
 
-    // Write an action using console.log()
-    // To debug: console.error('Debug messages...');
+    let node = { x: me.x, y: me.y };
+    const queue = [node];
+    const alreadyVisited = new Set();
 
-    console.log('WAIT');     // MOVE <x> <y> | WAIT
+    while (queue.length)
+    {
+        node = queue.shift();
+        if (alreadyVisited.has(`${node.x}|${node.y}`))
+            continue;
+        alreadyVisited.add(`${node.x}|${node.y}`);
 
+        if (map[node.y][node.x] === 'E')
+            break;
+        for (const d of DIR)
+        {
+            const [deltaX, deltaY] = d;
+            const nextX = node.x + deltaX;
+            const nextY = node.y + deltaY;
+            const value = map[nextY][nextX];
+            const nextNode = { x: nextX, y: nextY, value, parent: node };
+            if (value !== '#' && 0 < nextX && nextX < w && 0 < nextY && nextY < h)
+                queue.push(nextNode);
+        }
+    }
+
+    const path = [];
+
+    while (node)
+    {
+        path.unshift([node.x, node.y]);
+        node = node.parent;
+    }
+
+    let canGo = false;
+    const [simX, simY] = path[1] ?? [];
+    if (path.length > 1)
+    {
+        canGo = true;
+        //Simulate
+        for (const d of DIR)
+        {
+            const [deltaX, deltaY] = d;
+            const newX = simX + deltaX;
+            const newY = simY + deltaY;
+            const value = map[newY][newX];
+            if (value === 'G')
+            {
+                canGo === false;
+                break;
+            }
+        }
+    }
+
+    if (canGo)
+        console.log('MOVE', simX, simY);
+    else
+        console.log('WAIT'); // ESQUIVE;
 }
