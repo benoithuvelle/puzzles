@@ -11,6 +11,8 @@ function getScore(x, y)
         return 10;
     else if (Math.abs(x) <= SIZE / 2 && Math.abs(y) <= SIZE / 2)
         return 5;
+    else
+        return 0;
 }
 
 const players = {};
