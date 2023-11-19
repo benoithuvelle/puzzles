@@ -101,5 +101,30 @@ while (true)
     if (canGo)
         console.log('MOVE', simX, simY);
     else
-        console.log('WAIT'); // ESQUIVE;
+    {
+        let ghostNextToMe = [];
+        let freeCells = [];
+        for (const d of DIR)
+        {
+            const [deltaX, deltaY] = d;
+            const newX = me.x + deltaX;
+            const newY = me.y + deltaY;
+            const value = map[newY][newX];
+            if (value === 'G')
+                ghostNextToMe.push([newX, newY]);
+            else if (value === '.')
+            {
+                freeCells.push([newX, newY]);
+            }
+        }
+        if (!ghostNextToMe.length)
+            console.log('WAIT');
+        else if (freeCells.length)
+        {
+            const [x, y] = freeCells[0];
+            console.log('MOVE', x, y);
+        }
+        else
+            console.log('WAIT');
+    }
 }

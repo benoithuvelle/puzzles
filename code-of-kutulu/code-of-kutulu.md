@@ -32,3 +32,6 @@ Evaluer l'interet de joindre un ami s'il est target par un fantome.
 ...
 for friend of friends
 friendLife = friend.life \* friend.isTarget ? 0.5 : 1
+
+Strat vue ensemble
+Calculer le score de chaque case sur les voisines directe + 1
