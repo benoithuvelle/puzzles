@@ -16,12 +16,12 @@ function getScore(x, y)
 }
 
 const players = {};
-
 for (let index = 0; index < N; index++)
 {
     const name = readline();
     players[name] = { name, index, score: 0 };
 }
+
 const T = +readline();
 for (let i = 0; i < T; i++)
 {
