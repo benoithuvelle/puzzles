@@ -1,3 +1,30 @@
+const DRONE_HIT_RANGE = 200;
+const MONSTER_EAT_RANGE = 300;
+
+const sea = { left: 0, right: 10000, top: 0, bottom: 10000 };
+const targetPoints = {
+    0: {
+        TL: { x: sea.left, y: 2500 },
+        TR: { x: sea.right, y: 2500 },
+        BL: { x: sea.left, y: 5000 },
+        BR: { x: sea.right, y: 5000 },
+    },
+    1: {
+        TL: { x: sea.left, y: 5000 },
+        TR: { x: sea.right, y: 5000 },
+        BL: { x: sea.left, y: 7500 },
+        BR: { x: sea.right, y: 7500 },
+    },
+    2: {
+        TL: { x: sea.left, y: 7500 },
+        TR: { x: sea.right, y: 7500 },
+        BL: { x: sea.left, y: sea.bottom },
+        BR: { x: sea.right, y: sea.bottom },
+    },
+};
+
+const missions = ['TYPES_2', 'TYPES_1', 'TYPES_0'];
+
 const creatures = new Array(+readline()).fill(0).map(() => {
     const [id, color, type] = readline()
         .split(' ')
@@ -6,8 +33,7 @@ const creatures = new Array(+readline()).fill(0).map(() => {
 });
 
 // To be updated every turn
-let myDrones;
-let nearbyCreatures = {};
+let myDrones = {};
 
 const creaturesById = {};
 const creaturesByType = {};
@@ -16,8 +42,8 @@ for (const c of creatures)
 {
     creaturesById[c.id] = c;
     if (!creaturesByType[c.type])
-        creaturesByType[c.type] = [];
-    creaturesByType[c.type].push(c);
+        creaturesByType[c.type] = {};
+    creaturesByType[c.type][c.id] = c;
     if (!creaturesByColor[c.color])
         creaturesByColor[c.color] = [];
     creaturesByColor[c.color].push(c);
@@ -25,150 +51,232 @@ for (const c of creatures)
 
 // game loop
 // eslint-disable-next-line no-constant-condition
+let isOnLeftSide;
+let count = 0;
 while (true)
 {
-    +readline(); // myScore
+    count++ + readline(); // myScore
     +readline(); // opponentScore
 
     const myCreaturesId = new Array(+readline()).fill(0).map(() => +readline());
-    const opponentCreaturesId = new Array(+readline()).fill(0).map(readline);
+    new Array(+readline()).fill(0).map(readline); // opponentCreaturesId
 
-    myDrones = new Array(+readline()).fill(0).map(() => {
+    // reset myDrones
+    myDrones = {};
+    new Array(+readline()).fill(0).map(() => {
         const [id, x, y, emergency, battery] = readline().split(' ');
-        return { id, x, y, emergency, battery };
+        myDrones[id] = { id, x, y, emergency, battery };
+        isOnLeftSide = x < 5000;
     });
-    const opponentDrones = new Array(+readline()).fill(0).map(() => {
+
+    // opponentDrones
+    new Array(+readline()).fill(0).map(() => {
         const [id, x, y, emergency, battery] = readline().split(' ');
         return { id, x, y, emergency, battery };
     });
 
     // Unsaved fish scan
+    const scannedId = [];
+    const scanByDroneId = {};
     const droneScanCount = +readline();
     for (let i = 0; i < droneScanCount; i++)
-        readline().split(' '); // [droneId, creatureId]
+    {
+        const [droneId, creatureId] = readline()
+            .split(' ')
+            .map((x) => +x);
+        if (myDrones[droneId] === undefined)
+            continue;
+        scannedId.push(creatureId);
+        if (!scanByDroneId[droneId])
+            scanByDroneId[droneId] = [];
+        scanByDroneId[droneId].push(creatureId);
+    }
 
-    // reset nearbyCreatures
-    nearbyCreatures = {};
+    const monsters = [];
     const nbOfCreatures = +readline();
     for (let i = 0; i < nbOfCreatures; i++)
     {
         const [id, x, y, vx, vy] = readline()
             .split(' ')
             .map((x) => +x);
-        nearbyCreatures[id] = { id, x, y, vx, vy };
+        const creature = creaturesById[id];
+        if (creature.type < 0)
+            monsters.push({ id, x, y, vx, vy });
     }
 
     const radarBlipCount = +readline();
+
+    // RADAR AREA
+    const radars = {};
     for (let i = 0; i < radarBlipCount; i++)
     {
         const inputs = readline().split(' ');
         const droneId = +inputs[0];
         const creatureId = +inputs[1];
         const radar = inputs[2];
+        radars[creatureId] = { droneId, creatureId, radar };
     }
 
-    let lightState = 0;
-    const targets = [];
-
-    // if (shouldTargetFishTypes([myCreaturesId, opponentCreaturesId]))
-    // {
-    //     targets.push(targetFishTypes(myCreaturesId));
-    // }
-    // else if (shouldTargetColors([myCreaturesId, opponentCreaturesId]))
-    // {
-    //     targetColors();
-    // }
-    while (targets.length < myDrones.length)
+    // eslint-disable-next-line no-inner-declarations
+    function getTypeToFocus()
     {
-        let minDist = Infinity;
-        let target;
-        for (const id in nearbyCreatures)
+        let index = 2;
+        let numberOfType2 = 0;
+        let numberOfType1 = 0;
+        let numberOfType0 = 0;
+        for (const id of myCreaturesId)
         {
-            const fish = nearbyCreatures[id];
-            if (myCreaturesId.includes(fish.id))
-                continue;
-            for (const drone of myDrones)
+            const type = creaturesById[id].type;
+            if (type == 2)
+                numberOfType2++;
+            else if (type == 1)
+                numberOfType1++;
+            else if (type == 0)
+                numberOfType0++;
+        }
+        if (numberOfType2 >= 4)
+        {
+            index--;
+            if (numberOfType1 >= 4)
             {
-                const dist = Math.sqrt((drone.x - fish.x) ** 2 + (drone.y - fish.y) ** 2);
-                if (dist < minDist)
+                index--;
+                if (numberOfType0 >= 4)
                 {
-                    target = fish;
-                    minDist = dist;
+                    index--;
                 }
             }
-            targets.push(target);
         }
-        if (minDist < 2000)
-            lightState = 1;
+
+        return index;
     }
 
-    for (let i = 0; i < myDrones.length; i++)
+    // eslint-disable-next-line no-inner-declarations
+    function focusType(typeIndex)
     {
-        const target = targets.pop(); // Need to select target according to distance from drones
-        if (target)
-            console.log(`MOVE ${target.x} ${target.y} ${lightState}`);
+        const creaturesIds = Object.keys(creaturesByType[typeIndex])
+            .map((x) => +x)
+            .filter((id) => !myCreaturesId.includes(id) && !scannedId.includes(id));
+        const missionRadars = creaturesIds
+            .map((id) => {
+                return radars[id];
+            })
+            .filter((r) => r !== undefined)
+            .sort((a, b) => {
+                if (a.radar === b.radar)
+                    return 0;
+                else if (a.radar.includes(isOnLeftSide ? 'L' : 'R'))
+                    return -1;
+                else
+                    return 1;
+            });
+
+        if (!missionRadars.length)
+            return [{ y: 0 }];
         else
+        {
+            const missions = [];
+            for (const mission of missionRadars)
+                missions.push(targetPoints[typeIndex][mission.radar]);
+            return missions;
+        }
+    }
+
+    const targets = [...focusType(getTypeToFocus()), ...focusType(1)];
+
+    let lightState = count % 6 ? 0 : 1;
+
+    for (const id in myDrones)
+    {
+        const nbOfScan = scanByDroneId[id] ? scanByDroneId[id].length : 0;
+        const drone = myDrones[id];
+        const target = targets.shift();
+        const threshold = myCreaturesId.length < 7 ? 2 : 1;
+
+        let vx = 0;
+        let vy = target.y > drone.y ? 600 : -600;
+        let vector = { vx, vy };
+
+        let canGo = false;
+
+        // check collision with monsters
+        let angle = -1;
+        while (!canGo)
+        {
+            angle += 1;
+            vector = { vx: 0, vy: -600 };
+            // vector = rotate({ vx, vy }, angle);
+            let nbOfCollisions = 0;
+            printErr('Monsters:', monsters.length);
+            for (const monster of monsters)
+            {
+                const collision = +getCollision(drone, monster, vector);
+                nbOfCollisions += collision;
+            }
+            printErr(nbOfCollisions);
+            canGo = !nbOfCollisions;
+        }
+
+        printErr(vector);
+        if (vx || vy)
+            console.log(`MOVE ${parseInt(+drone.x + +vector.vx)} ${parseInt(+drone.y + +vector.vy)} 1`);
+        else if (nbOfScan >= threshold || nbOfScan + myCreaturesId.length >= 12)
+            console.log(`MOVE ${drone.x} ${sea.top} 1 Go back home`);
+        else if (!target || (!target.x === undefined && target.y === undefined))
             console.log('WAIT 0');
+        else
+            console.log(`MOVE ${target.x ?? drone.x} ${target.y} ${lightState} ${nbOfScan}`);
     }
 }
 
-function shouldTargetFishTypes(idCollections)
+function getCollision(drone, monster, vector)
 {
-    for (const collection of idCollections)
-    {
-        const types = [];
-        for (const id of collection)
-        {
-            const type = creaturesById[id].type;
-            if (!types.includes(type))
-                types.push(type);
-        }
-        if (types.length >= 3)
-            return false;
-    }
+    // Check instant collision
+    if (isInRange(drone, monster, DRONE_HIT_RANGE + MONSTER_EAT_RANGE))
+        return true;
+
+    // Change referencial
+    const x = monster.x;
+    const y = monster.y;
+    const ux = drone.x;
+    const uy = drone.y;
+
+    const x2 = x - ux;
+    const y2 = y - uy;
+    const r2 = MONSTER_EAT_RANGE + DRONE_HIT_RANGE;
+    const vx2 = monster.vx - vector.vx;
+    const vy2 = monster.vy - vector.vy;
+    const a = vx2 * vx2 + vy2 * vy2;
+
+    if (a <= 0.0)
+        return false;
+
+    const b = 2.0 * (x2 * vx2 + y2 * vy2);
+    const c = x2 * x2 + y2 * y2 - r2 * r2;
+    const delta = b * b - 4.0 * a * c;
+    if (delta < 0.0)
+        return false;
+
+    const t = (-b - Math.sqrt(delta)) / (2.0 * a);
+    if (t <= 0.0)
+        return false;
+
+    if (t > 1.0)
+        return false;
+
     return true;
 }
 
-function targetFishTypes(list)
+function isInRange(v1, v2, range)
 {
-    const types = new Set();
-    for (const id of list)
-    {
-        const type = creaturesById[id].type;
-        types.add(type);
-    }
-    if (!types.has(2))
-        return chooseTarget('type', 2);
-    else if (!types.has(1))
-        return chooseTarget('type', 1);
-    else if (!types.has(0))
-        return chooseTarget('type', 0);
+    const result = (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) <= range * range;
+    return result;
 }
-function shouldTargetColors() {}
-function targetColors() {}
 
-/**
- * Select the array of fish to target according to 'param' (type|color)
- * Compute the distance to each fish and return the closest one
- */
-function chooseTarget(param, value)
+// Radian
+function rotate(vector, angle)
 {
-    const creatureArray = param === 'type' ? creaturesByType[value] : creaturesByColor[value];
-    let closestFish;
-    let minDistance = Infinity;
-    for (const fish of creatureArray)
-    {
-        const id = fish.id;
-        const f = nearbyCreatures[id];
-        for (const drone of myDrones)
-        {
-            const dist = Math.sqrt((drone.x - f.x) ** 2 + (drone.y - f.y) ** 2);
-            if (dist < minDistance)
-            {
-                closestFish = f;
-                minDistance = dist;
-            }
-        }
-    }
-    return closestFish;
+    const nx = vector.vx * Math.cos(angle) - vector.vy * Math.sin(angle);
+    const ny = vector.vx * Math.sin(angle) + vector.vy * Math.cos(angle);
+
+    return { vx: nx, vy: ny };
 }

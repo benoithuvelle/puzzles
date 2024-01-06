@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "puzzle": "node puzzle.js"
+        "puzzle": "node puzzle.js",
+        "build": "webpack"
     },
     "repository": {
         "type": "git",
@@ -15,12 +16,14 @@
     "license": "ISC",
     "dependencies": {
         "@babel/core": "^7.23.2",
-        "@babel/eslint-parser": "^7.22.11"
+        "@babel/eslint-parser": "^7.22.11",
+        "webpack": "^5.89.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^6.7.3",
         "@typescript-eslint/parser": "^6.7.3",
         "eslint": "^8.50.0",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "webpack-cli": "^5.1.4"
     }
 }
