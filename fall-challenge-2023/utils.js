@@ -3,7 +3,6 @@
 
 export function getCollision(drone, monster)
 {
-    printErr(drone.vector);
     const DRONE_HIT_RANGE = 200;
     const MONSTER_EAT_RANGE = 300;
 
