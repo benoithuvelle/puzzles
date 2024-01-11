@@ -8,6 +8,7 @@ const BASE_INFORMATION_STRING = `34°45'21.8"N, 120°37'34.8"W, elevation: 46`; 
 
 function getLongitudeInDecimalDegree(string)
 {
+    // O(1)
     const [, degrees, minutes, seconds] = string.match(/(\d+)°(\d+)'(\d+.\d+)"[WE]/m); // Inputs seems to match this format everytime
     const decimalDegree = +degrees + +minutes / 60 + +seconds / 3600;
     return decimalDegree;
@@ -15,6 +16,7 @@ function getLongitudeInDecimalDegree(string)
 
 function getLatitudeInDecimalDegree(string)
 {
+    // O(1)
     const [, degrees, minutes, seconds] = string.match(/(\d+)°(\d+)'(\d+.\d+)"[NS]/m); // Inputs seems to match this format everytime
     const decimalDegree = +degrees + +minutes / 60 + +seconds / 3600;
     return decimalDegree;
@@ -61,10 +63,11 @@ const BASE = {
  */
 function parseMissionInformations(missionString)
 {
+    // O(1)
     const location = missionString.slice(0, missionString.indexOf(')') + 1);
     const x = getLongitudeInDecimalDegree(missionString); // longitude is X axis
     const y = getLatitudeInDecimalDegree(missionString); // latitude is Y axis
-    const z = +missionString.match(/ \d+$/g)[0]/1000
+    const z = +missionString.match(/ \d+$/g)[0] / 1000;
 
     return { location, x, y, z };
 }
@@ -77,6 +80,7 @@ function parseMissionInformations(missionString)
  */
 function computeMissileTravelingTime(x, y)
 {
+    // O(1)
     const radianFromDegree = (((BASE.y + y) / 2) * Math.PI) / 180;
     const dx = (BASE.x - x) * DEGREE_IN_KM * Math.cos(radianFromDegree); // longitude
     const dy = (BASE.y - y) * DEGREE_IN_KM; // latitude
@@ -87,7 +91,11 @@ function computeMissileTravelingTime(x, y)
 }
 
 const numberOfMissions = +readline();
-for (let i = 0; i < numberOfMissions; i++)
+for (
+    let i = 0;
+    i < numberOfMissions;
+    i++ // O(numberOfMissions)
+)
 {
     let bestCollector;
     let maxCow = 0;
@@ -97,6 +105,7 @@ for (let i = 0; i < numberOfMissions; i++)
 
     for (const collector of collectors)
     {
+        // O(nbOfCollectors) ==> O(3)
         const simulation = {
             name: collector.name,
             duration: 0,
@@ -108,9 +117,10 @@ for (let i = 0; i < numberOfMissions; i++)
         // minus the time the collector needs to travel back
         // minus the time to get a cow (==> means if no more time, do not do it)
         while (simulation.duration + collector.computeTravelingTime(z) + timeToGetACow < missileTravelingTime)
-        {            
+        {
+            // O(missileTravelingTime / O(1))
             if (simulation.numberOfCows >= collector.capacity)
-                break
+                break;
             simulation.duration += timeToGetACow;
             simulation.numberOfCows++;
         }
@@ -121,7 +131,7 @@ for (let i = 0; i < numberOfMissions; i++)
         if (simulation.numberOfCows > maxCow)
         {
             bestCollector = simulation.name;
-            maxCow = simulation.numberOfCows
+            maxCow = simulation.numberOfCows;
         }
     }
 
@@ -132,3 +142,6 @@ for (let i = 0; i < numberOfMissions; i++)
             `${location}: possible. Send a ${bestCollector} to bring back ${maxCow} ${maxCow > 1 ? 'cows' : 'cow'}.`
         );
 }
+
+// O(numberOfMissions * (nbOfCollectors * max missileTravelingTime)
+// ==> la complexité dépend du nombre de mission, du nombre de collector et de la distance de chaque mission)

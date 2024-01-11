@@ -1,5 +1,35 @@
-// Seeds
-// only 2 monsters : seed=236029399147544860
+import Vec2 from 'vec2';
+
+export const DRONE_SPEED = 600;
+export const home = (x) => new Vec2(x, 0);
+
+export const STATE = {
+    DRAWN: 'DRAWN',
+    SEEK: 'SEEK',
+    RETURN: 'RETURN',
+};
+
+const sea = { left: 0, right: 10000, top: 0, bottom: 10000 };
+export const targetPoints = {
+    0: {
+        TL: { x: sea.left, y: 2500 },
+        TR: { x: sea.right, y: 2500 },
+        BL: { x: sea.left, y: 5000 },
+        BR: { x: sea.right, y: 5000 },
+    },
+    1: {
+        TL: { x: sea.left, y: 5000 },
+        TR: { x: sea.right, y: 5000 },
+        BL: { x: sea.left, y: 7500 },
+        BR: { x: sea.right, y: 7500 },
+    },
+    2: {
+        TL: { x: sea.left, y: 7500 },
+        TR: { x: sea.right, y: 7500 },
+        BL: { x: sea.left, y: sea.bottom },
+        BR: { x: sea.right, y: sea.bottom },
+    },
+};
 
 export function getCollision(drone, monster)
 {
