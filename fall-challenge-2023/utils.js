@@ -1,12 +1,13 @@
 import Vec2 from 'vec2';
 
+export const depths = [2500, 5000, 7500];
 export const DRONE_SPEED = 600;
 export const home = (x) => new Vec2(x, 0);
-
 export const STATE = {
-    DRAWN: 'DRAWN',
+    SINK: 'SINK',
     SEEK: 'SEEK',
     RETURN: 'RETURN',
+    EMERGENCY: 'EMERGENCY',
 };
 
 const sea = { left: 0, right: 10000, top: 0, bottom: 10000 };

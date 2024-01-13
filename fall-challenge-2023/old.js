@@ -207,7 +207,6 @@ while (true)
             vector = { vx: 0, vy: -600 };
             // vector = rotate({ vx, vy }, angle);
             let nbOfCollisions = 0;
-            printErr('Monsters:', monsters.length);
             for (const monster of monsters)
             {
                 const collision = +getCollision(drone, monster, vector);
@@ -217,7 +216,6 @@ while (true)
             canGo = !nbOfCollisions;
         }
 
-        printErr(vector);
         if (vx || vy)
             console.log(`MOVE ${parseInt(+drone.x + +vector.vx)} ${parseInt(+drone.y + +vector.vy)} 1`);
         else if (nbOfScan >= threshold || nbOfScan + myCreaturesId.length >= 12)
