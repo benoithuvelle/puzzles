@@ -21,7 +21,7 @@ while (true)
         switch (drone.state)
         {
             case STATE.SINK:
-                drone.target = new Vec2(drone.position.x, depths[Math.max(0, drone.seekType)]);
+                drone.target = new Vec2(drone.isLefty ? 2500 : 7500, depths[Math.max(0, drone.seekType)]);
                 break;
             case STATE.SEEK:
                 drone.seek(creatures);
@@ -41,41 +41,41 @@ while (true)
             )}`
         );
 
-        // switch (drone.state)
-        // {
-        //     case STATE.RETURN:
-        //         if (drone.y < 500)
-        //         {
-        //             drone.seekType--;
-        //             drone.state = STATE.SINK;
-        //         }
-        //         break;
-        //     case STATE.SINK:
-        //         if (drone.y > drone.target.y)
-        //         {
-        //             drone.target = undefined;
-        //             drone.state = STATE.SEEK;
-        //         }
-        //         break;
-        //     case STATE.SEEK: {
-        //         let total = 0;
-        //         const seekCreaturesIds = Object.values(creatures)
-        //             .filter((c) => c.type === drone.seekType)
-        //             .map((c) => c.id);
+        switch (drone.state)
+        {
+            case STATE.RETURN:
+                if (drone.y < 500)
+                {
+                    drone.seekType--;
+                    drone.state = STATE.SINK;
+                }
+                break;
+            case STATE.SINK:
+                if (drone.y > drone.target.y)
+                {
+                    drone.target = undefined;
+                    drone.state = STATE.SEEK;
+                }
+                break;
+            case STATE.SEEK: {
+                let total = 0;
+                const seekCreaturesIds = Object.values(creatures)
+                    .filter((c) => c.type === drone.seekType)
+                    .map((c) => c.id);
 
-        //         let scanCount = 0;
-        //         let globalCount = 0;
-        //         for (const id of seekCreaturesIds)
-        //         {
-        //             if (creatures[id].isOut)
-        //                 continue;
-        //             scanCount += +drone.scan.has(+id);
-        //             globalCount += +drone.globalScan.has(+id);
-        //         }
-        //         if (scanCount >= 2 || globalCount == 4)
-        //             drone.state = STATE.RETURN;
-        //     }
-        // }
+                let scanCount = 0;
+                let globalCount = 0;
+                for (const id of seekCreaturesIds)
+                {
+                    if (creatures[id].isOut)
+                        continue;
+                    scanCount += +drone.scan.has(+id);
+                    globalCount += +drone.globalScan.has(+id);
+                }
+                if (scanCount >= 2 || globalCount == 4)
+                    drone.state = STATE.RETURN;
+            }
+        }
         if (drone.emergency)
             drone.state = STATE.SINK;
     }

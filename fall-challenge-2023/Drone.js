@@ -19,7 +19,7 @@ export default class Drone
         this.scan = new Set();
         this.radar = new Map();
         this.light = new Light();
-        this.state = STATE.SEEK;
+        this.state = STATE.SINK;
         this.message = '';
         this.creatures = creatures;
     }
@@ -129,14 +129,17 @@ export default class Drone
     {
         this.vector = new Vec2(this.target.x, this.target.y).subtract(this.position).normalize().multiply(this.speed);
         const fullCircle = 6.5;
-        const radianStep = 0.01;
+        const radianStep = 0.1;
         for (let i = 0; i < fullCircle; i += radianStep)
         {
             let isCollide = false;
             for (const monster of monsters)
             {
                 if (getCollision(this, monster))
+                {
                     isCollide = true;
+                    printErr(this.id, monster.id);
+                }
             }
             if (isCollide)
                 this.vector.rotate(i * (this.isLefty || this.isCloseTo('right')
@@ -158,7 +161,7 @@ export default class Drone
 
     isInTypeDepth()
     {
-        const type = this.creatures[this.targetId].type;
+        const type = this.creatures[this.targetId]?.type ?? 2;
         if (this.y > depths[type] && this.y < (depths[type + 1] ?? 10000))
             return true;
     }

@@ -39,7 +39,10 @@ export function getCollision(drone, monster)
 
     // Check instant collision
     if (isInRange(drone, monster, DRONE_HIT_RANGE + MONSTER_EAT_RANGE))
+    {
+        printErr('can not avoid');
         return true;
+    }
 
     // Change referencial
     const x = monster.position.x;
